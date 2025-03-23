@@ -12,9 +12,8 @@ option(WITH_COVERAGE "Enable code coverage reporting" OFF)
 
 if(WITH_COVERAGE)
     if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-        # Add coverage flags
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+        add_compile_options(--coverage -O0 -g)
+        add_link_options(--coverage)
     endif()
 endif()
 

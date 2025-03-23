@@ -16,11 +16,13 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake libcmocka-dev valgrind
+        sudo apt-get install -y cmake libcmocka-dev valgrind lcov
     - name: Configure
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DWITH_COVERAGE=ON
     - name: Build
-      run: cmake --build build
+      run: |
+        cd build
+        make
     - name: Test
       run: |
         cd build
@@ -33,6 +35,7 @@ jobs:
       if: success()
       run: |
         cd build
-        gcov ../src/*.c
-        bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        bash <(curl -s https://codecov.io/bash) -f coverage.info
 
